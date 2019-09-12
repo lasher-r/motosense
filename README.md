@@ -20,3 +20,7 @@ The whole thing is controlled with an adafruit metro mini.
  *  [DAC](https://www.adafruit.com/product/935)
 
  *  [PiTFT Display](https://www.adafruit.com/product/2441)
+
+## Wiring
+
+![fritz](moto_bb.png "fritzing")
