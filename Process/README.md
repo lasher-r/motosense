@@ -90,7 +90,7 @@ Lucky us, this is another I2C device with a new address.
 To wire it up simply power it with vin and ground.  (Note that the output voltage is rail-to-rail and proportional to the power pin so if you run it from 3.3V, the output range is 0-3.3V. If you run it from 5V the output range is 0-5V.)  Then connect the sda and scl pins to the arduino.
 
 ![dac](20190610_192915.jpg "dac")
-Note that it was ~74F in the shop.
+Note that it was ~74F in the shop.  Ignore the button for now.
 
 To change the code:
 
