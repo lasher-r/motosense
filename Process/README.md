@@ -1,6 +1,11 @@
 # Process
 
  *  Multiplexing the IR sensors.
+ *  Adding a DAC.
+
+### Next:
+
+Add a button to select output.
 
 
 ## Multiplexing the IR sensors.
@@ -73,4 +78,66 @@ tcaselect(2);
 double temp1 = irTemp1.readObjectTempF();
 tcaselect(7);
 double temp2 = irTemp2.readObjectTempF();
+```
+
+
+# Adding a DAC
+
+Because this is going on a 1929 motorcycle, we're trying to keep the aesthetic right.  We'll use a volt meter to display the outputs of the arduino.  To do this we'll use a [digital to analog converter](https://www.adafruit.com/product/935).
+
+Lucky us, this is another I2C device with a new address.
+
+To wire it up simply power it with vin and ground.  (Note that the output voltage is rail-to-rail and proportional to the power pin so if you run it from 3.3V, the output range is 0-3.3V. If you run it from 5V the output range is 0-5V.)  Then connect the sda and scl pins to the arduino.
+
+![dac](20190610_192915.jpg "dac")
+Note that it was ~74F in the shop.
+
+To change the code:
+
+Add the adafruit library to the top of the file:
+```C
+#include <Adafruit_MCP4725.h> //dac
+```
+
+In the setup function instantiate the dac:
+```C
+void setup(){
+  // some code
+  
+  //0x62 is default address
+  // you can change it to 0x63 by shorting the A0 pin
+  dac.begin(0x62); 
+  // some code
+}
+```
+
+Send some data to the dac, probably in your loop:
+```C
+// Some code
+
+double v;
+//Some logic to determine to correct value of v
+// v should be between 0 and 4095 (0x0FFF)
+dac.setVoltage(v, false); //send to dac.  
+// the bool sets a flag to remember in EEPROM for next time it starts
+
+// Some more code
+```
+
+I add a helper function to change the scale from some range of temperatures to 0-4095:
+```C
+double rescaleTempToV(double value){
+  // these values go from 0-4.84 volts, what I can get out of the dac
+  //    with the volt drop from usb.  I'll change when using the bench power supply
+  //    or in the final product.
+  
+  //change oldMin and oldMax to suit your needs.
+  static double newMin = 0;
+  static double newMax = 4095;
+  static double oldMin = 0;
+  static double oldMax = 484;
+
+  double newV = (newMax - newMin) / (oldMax - oldMin) * (value - oldMin) + newMin;
+  return newV;
+}
 ```
