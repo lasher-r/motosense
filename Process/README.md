@@ -37,6 +37,7 @@ Except it has a fixed address of 0x5A and I need two.  Notice that using the lib
 The wiring was still relatively simple, just add the multiplexer between the sensors and the arduino:
 
 ![tca](20190601_153602.jpg "tca")
+Note that in this picture I hook up the sensors to pins sd0, sc0, sd1, and sc1.  I have since moved them to sd2, sc2, sd7, and sc7.  The code reflects the 2 and 7 connectons because I'm writing this considerably after the fact.
 
 The code needs a few changes:
 
@@ -146,9 +147,9 @@ double rescaleTempToV(double value){
 
 # Add a button to select output.
 
-I add a push button to change what the voltmeter is putputting.  It can show temp1, temp2, or (soon) the tachometer/spedometer.
+I add a push button to change what the voltmeter is outputting.  It can show temp1, temp2, or (soon) the tachometer/spedometer.
 
-For the wiring I just ad a button with one side going to ground and the other to pin 8.  I then pull pin 8 high and when the button is pushed it goes low.
+For the wiring I just add a button with one side going to ground and the other to pin 8.  I then pull pin 8 high and when the button is pushed it goes low.
 
 The code:
 
