@@ -151,6 +151,8 @@ I add a push button to change what the voltmeter is outputting.  It can show tem
 
 For the wiring I just add a button with one side going to ground and the other to pin 8.  I then pull pin 8 high and when the button is pushed it goes low.
 
+I don't have a picture of this because I'm writing this after doing the jst connectors and I've moved the button to a seperate board but the wiring should be pretty simple as explained and you can see the placement in the above picture, just add a connection to ground from the top left pin and to the arduino pin 8 on the bottom right.  Then add a 10k resistor between pin 8 and power.
+
 The code:
 
 We need to track what options we can show and what is currently being displayed (and therefore what is next when the button is pressed.)
