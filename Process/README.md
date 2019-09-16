@@ -2,15 +2,16 @@
 
  *  Multiplexing the IR sensors.
  *  Adding a DAC.
+ *  Add a button to select output.
 
 ### Next:
 
-Add a button to select output.
+JST connections to the displays.
 
 
 ## Multiplexing the IR sensors.
 
-The [ir sensor](https://www.adafruit.com/product/1748) I got is an I2C device which makes things easy to wire up.  Just power the sensor, connect the I2C pins and add pull up resistors and your done.  The only hard part is making sure you know what pin is what, there's a little tab to help orientate the sensor.
+The [ir sensor](https://www.adafruit.com/product/1748) I got is an I2C device which makes things easy to wire up.  Just power the sensor, connect the I2C pins and add pull up resistors and you're done.  The only hard part is making sure you know what pin is what, there's a little tab to help orientate the sensor.
 
 The code is straightforward:
 
@@ -140,4 +141,71 @@ double rescaleTempToV(double value){
   double newV = (newMax - newMin) / (oldMax - oldMin) * (value - oldMin) + newMin;
   return newV;
 }
+```
+
+
+# Add a button to select output.
+
+I add a push button to change what the voltmeter is putputting.  It can show temp1, temp2, or (soon) the tachometer/spedometer.
+
+For the wiring I just ad a button with one side going to ground and the other to pin 8.  I then pull pin 8 high and when the button is pushed it goes low.
+
+The code:
+
+We need to track what options we can show and what is currently being displayed (and therefore what is next when the button is pressed.)
+
+We also need to track the button state so that we can only react to high to low boundries.
+
+At the top of the file add:
+```C
+// volt display switch
+const int PIN_BUTTON = 7;
+const int DISP_TEMP1 = 0;
+const int DISP_TEMP2 = 1;
+int oldButtonState = 0;
+int currDispl = 0;
+```
+
+
+Set the button pin as an input.
+
+In setup() add:
+```C
+  //display switch
+  pinMode(PIN_BUTTON, INPUT);
+```
+
+In the loop we can't just detect if the button is low and then cycle through the options, we would get triggered for every time loop() is called and the button is down even if the button is pressed only once. So we get the button state and compare it to the old button state to only react to the button being released.
+
+Once we have gone from low to high we just cycle between the DISP_ constants.  Right now the '2' is a little bit magic number-y but it will be cleaned up later.
+
+In loop() add:
+
+```C
+// volt display switch
+int buttonState = digitalRead(PIN_BUTTON);
+// check if the pushbutton is pressed. If it is, the buttonState is HIGH:
+if (buttonState == HIGH && oldButtonState == LOW) {
+  currDispl = (currDispl + 1) % 2;
+}
+oldButtonState = buttonState; // remember the state for next time arround
+```
+
+Now we can go back to the code we added to send data to the dac and add the logic to determine what to send the if-else statement below can be added:
+
+```C
+double v;
+//Some logic to determine to correct value of v
+// v should be between 0 and 4095 (0x0FFF)
+
+if (currDispl == DISP_TEMP1){
+  v = rescaleTempToV(temp1);
+} else if (currDispl == DISP_TEMP2){
+  v = rescaleTempToV(temp2);
+}
+
+dac.setVoltage(v, false); //send to dac.  
+// the bool sets a flag to remember in EEPROM for next time it starts
+
+// Some more code
 ```
