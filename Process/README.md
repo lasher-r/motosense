@@ -37,7 +37,7 @@ Except it has a fixed address of 0x5A and I need two.  Notice that using the lib
 The wiring was still relatively simple, just add the multiplexer between the sensors and the arduino:
 
 ![tca](20190601_153602.jpg "tca")
-Note that in this picture I hook up the sensors to pins sd0, sc0, sd1, and sc1.  I have since moved them to sd2, sc2, sd7, and sc7.  The code reflects the 2 and 7 connectons because I'm writing this considerably after the fact.
+Note that in this picture I hook up the sensors to pins sd0, sc0, sd1, and sc1.  I have since moved them to sd2, sc2, sd7, and sc7.  The code reflects the 2 and 7 connectons because I'm writing this considerably after the fact.  Also the tca isn't being powered in this picture, vin and gnd should be connected.
 
 The code needs a few changes:
 
@@ -92,7 +92,7 @@ Lucky us, this is another I2C device with a new address.
 To wire it up simply power it with vin and ground.  (Note that the output voltage is rail-to-rail and proportional to the power pin so if you run it from 3.3V, the output range is 0-3.3V. If you run it from 5V the output range is 0-5V.)  Then connect the sda and scl pins to the arduino.
 
 ![dac](20190610_192915.jpg "dac")
-Note that it was ~74F in the shop.  Ignore the button for now.
+Note that it was ~74F in the shop.  Ignore the button for now.  I've also switched to a smaller version of the arduino and a bigger breadboard.  The ir sensors now show their ic2 2 and 7 connections but it's otherwise the same setup.
 
 To change the code:
 
